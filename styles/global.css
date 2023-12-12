@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../styles/fonts/Roboto-Light.ttf') format('truetype');
+    font-weight: 300;
+    /* Make sure this matches your fontWeight configuration */
+    font-style: normal;
+}

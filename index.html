@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html
+  class=""
+  lang="en"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <link
+      rel="stylesheet"
+      href="styles.css"
+    />
+    <link
+      href="./styles/global.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <style>
+      .info {
+        padding: 10px 5px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: rgba(255, 234, 185, 0.6);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        border-width: 2px;
+        border-color: rgba(12, 109, 113, 1);
+        text-align: center;
+      }
+      .legend {
+        line-height: 18px;
+        color: #555;
+      }
+      .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+      }
+      .bg-oval {
+    border-radius: 0 0 0 100%;
+}
+    </style>
+
+    <title>Índices Distritales de Riesgo</title>
+  </head>
+
+  <body class="font-catie bg-background">
+    <div class="p-7 sm:p-14 relative border-b-2 border-secondary">
+      <div class="flex flex-col">
+        <h1
+          class="w-full sm:w-3/4 sm:text-6xl text-4xl text-yellow-200 pb-14 font-semibold"
+        >
+          Centro Agronómico Tropical de Investigación y Enseñanza
+        </h1>
+        <p class="w-full sm:w-3/5 text-white font-light text-2xl">
+          De acuerdo con el Índice Mundial de Riesgo, elaborado por la Universidad de las Naciones
+          Unidas en el año 2016, Costa Rica está en la posición número 8 de los países más expuestos a los
+          desastres naturales a nivel mundial. El presente sitio funciona como un prototipo para la muestra 
+          de datos de los índices distritales de riesgo de desastres por eventos lluviosos extremos en Costa Rica.
+          <br>
+          <br>
+          Para conocerlos, puede interactuar con los selectores o directamente dando click sobre el mapa. Una 
+          vez elegido el distrito, seleccione un mes y el índice será mostrado. Presione 'reiniciar' para 
+          iniciar su búsqueda de nuevo.
+        </p>
+      </div>
+      <div
+        class="absolute -z-20 top-0 right-0 h-3/4 sm:h-3/4 w-3/4 bg-cover bg-center bg-oval overflow-hidden bg-yellow-50"
+      >
+        <img
+          src="./styles/images/img.jpg"
+          alt="Background Circle"
+          class="h-full w-full object-cover"
+        />
+        <div class="absolute inset-0 bg-black opacity-60"></div>
+      </div>
+    </div>
+    <div
+      class="flex lg:flex-row flex-col items-center sm:space-x-10 space-y-5 p-7 sm:p-14"
+    >
+      <div
+        class="flex flex-col space-y-5 text-primaryLight border-2 border-whiteAccent rounded-md lg:w-1/5 p-10"
+      >
+        <h2 class="text-primaryLight text-2xl text-center tracking-widest">
+          ÍNDICES DISTRITALES DE RIESGO
+        </h2>
+        <div class="flex flex-col items-center space-y-3">
+          <label for="selectProvincia">PROVINCIA</label>
+          <select
+            id="selectProvincia"
+            onchange="selectChangeP()"
+            class="block w-full px-4 py-3 text-white bg-secondary hover:bg-secondaryDark focus:ring-4 focus:outline-none focus:ring-primaryLight focus:text-primary font-medium rounded-lg text-lg text-center"
+          ></select>
+        </div>
+        <div class="flex flex-col items-center space-y-3">
+          <label for="selectCanton">CANTÓN</label>
+          <select
+            id="selectCanton"
+            onchange="selectChangeC()"
+            class="block w-full px-4 py-3 text-white bg-secondary hover:bg-secondaryDark focus:ring-4 focus:outline-none focus:ring-primaryLight focus:text-primary font-medium rounded-lg text-lg text-center"
+          ></select>
+        </div>
+        <div class="flex flex-col items-center space-y-3">
+          <label for="selectDistrito">DISTRITO</label>
+          <select
+            id="selectDistrito"
+            onchange="selectChangeD()"
+            class="block w-full px-4 py-3 text-white bg-secondary hover:bg-secondaryDark focus:ring-4 focus:outline-none focus:ring-primaryLight focus:text-primary font-medium rounded-lg text-lg text-center"
+          ></select>
+        </div>
+        <div class="flex flex-col items-center space-y-3">
+          <label for="selectMes">MES</label>
+          <select
+            id="selectMes"
+            class="block w-full px-4 py-3 text-white bg-secondary hover:bg-secondaryDark focus:ring-4 focus:outline-none focus:ring-primaryLight focus:text-primary font-medium rounded-lg text-lg text-center"
+          ></select>
+        </div>
+        <hr
+          class="my-12 h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50"
+        />
+        <div class="flex flex-col items-center space-y-3">
+          <button
+            id="reset"
+            class="block w-full px-4 py-3 text-primary bg-secondary hover:bg-secondaryDark focus:ring-4 focus:outline-none focus:ring-primaryLight focus:text-primary font-medium rounded-lg text-lg text-center"
+          >
+            REINICIAR
+          </button>
+        </div>
+      </div>
+      <div
+        class="flex justify-center items-center lg:w-4/5 w-full order-3 sm:order-2"
+      >
+        <div
+          id="map"
+          class="h-[45rem] w-full"
+        ></div>
+      </div>
+    </div>
+    <script>
+      function selectChangeP() {
+        document.dispatchEvent(new Event('changeProvincia'));
+      }
+      function selectChangeC() {
+        document.dispatchEvent(new Event('changeCanton'));
+      }
+      function selectChangeD() {
+        document.dispatchEvent(new Event('changeDistrito'));
+      }
+      function selectChangeM() {
+        document.dispatchEvent(new Even('changeMes'));
+      }
+    </script>
+
+    <script
+      type="module"
+      src="script.js"
+    ></script>
+    <script
+      type="module"
+      src="mapscript.js"
+    ></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
+  </body>
+</html>
