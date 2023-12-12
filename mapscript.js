@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   try {
-    distritosIndicesData = await fetchData('/api/distritoIndicesXlsx');
+    distritosIndicesData = await fetchData('data/distrito_indices.json');
   } catch (error) {
     window.alert('¡¡¡Hubo un error al conseguir los datos en mapscript!!!');
   }

@@ -5,3 +5,8 @@
     /* Make sure this matches your fontWeight configuration */
     font-style: normal;
 }
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('../styles/fonts/Roboto-Regular.ttf') format('truetype');
+}
