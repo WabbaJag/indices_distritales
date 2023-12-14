@@ -62,11 +62,16 @@
         >
           Centro Agronómico Tropical de Investigación y Enseñanza
         </h1>
+        <h3 class="w-full sm:w-3/4 sm:text-4xl text-2xl text-yellow-100 pb-14 font-medium tracking-wide">
+          Índices distritales de riesgo de desastres por eventos lluviosos extremos en Costa Rica
+        </h3>
         <p class="w-full sm:w-3/5 text-white font-light text-2xl">
           De acuerdo con el Índice Mundial de Riesgo, elaborado por la Universidad de las Naciones
           Unidas en el año 2016, Costa Rica está en la posición número 8 de los países más expuestos a los
           desastres naturales a nivel mundial. El presente sitio funciona como un prototipo para la muestra 
-          de datos de los índices distritales de riesgo de desastres por eventos lluviosos extremos en Costa Rica.
+          de datos encontrados en la tesis realizada por M.Sc. Nazareth Rojas Morales, titulada 
+          <em>Índices distritales de riesgo de desastres por eventos lluviosos extremos en Costa Rica</em> realizada
+          el año 2018 en la Universidad de Costa Rica.
           <br>
           <br>
           Para conocerlos, puede interactuar con los selectores o directamente dando click sobre el mapa. Una 
@@ -86,12 +91,12 @@
       </div>
     </div>
     <div
-      class="flex lg:flex-row flex-col items-center sm:space-x-10 space-y-5 p-7 sm:p-14"
+      class="flex lg:flex-row flex-col items-center sm:space-x-10 space-y-5 p-7 sm:p-14 "
     >
-      <div
-        class="flex flex-col space-y-5 text-primaryLight border-2 border-whiteAccent rounded-md lg:w-1/5 p-10"
+      <div id="menu"
+        class="flex flex-col space-y-5 text-primaryLight border-2 border-whiteAccent rounded-md lg:w-1/5 p-4"
       >
-        <h2 class="text-primaryLight text-2xl text-center tracking-widest">
+        <h2 class="text-primaryLight text-2xl text-center tracking-wide">
           ÍNDICES DISTRITALES DE RIESGO
         </h2>
         <div class="flex flex-col items-center space-y-3">
@@ -128,21 +133,28 @@
         <hr
           class="my-12 h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50"
         />
-        <div class="flex flex-col items-center space-y-3">
-          <button
-            id="reset"
-            class="block w-full px-4 py-3 text-primary bg-secondary hover:bg-secondaryDark focus:ring-4 focus:outline-none focus:ring-primaryLight focus:text-primary font-medium rounded-lg text-lg text-center"
-          >
-            REINICIAR
+      <div class="flex items-center lg:space-y-3">
+        <div class="w-1/2 flex lg:hidden justify-center">
+          <button id="scrollToMap" class="bg-primary rounded-full p-4 border-2 border-secondary hover:bg-primaryLight">
+            <img src="./styles/images/arrow-down.svg" alt="Down Arrow" class="w-6 h-6" />
           </button>
         </div>
+        <div class="w-1/2 lg:w-full flex justify-center">
+        <button
+          id="reset"
+          class="justify-center p-4 bg-secondary hover:bg-secondaryDark focus:ring-4 focus:outline-none focus:ring-primaryLight rounded-lg ">
+          <img src="./styles/images/arrow-path.svg" alt="Restart Arrow" class="w-6 h-6" />
+        </button>
+        </div>
+
       </div>
-      <div
-        class="flex justify-center items-center lg:w-4/5 w-full order-3 sm:order-2"
+      </div>
+      <div id="mapDiv"
+        class="flex justify-center items-center lg:w-4/5 w-full order-3 sm:order-2 relative"
       >
         <div
           id="map"
-          class="h-[45rem] w-full"
+          class="h-[45rem] w-full "
         ></div>
       </div>
     </div>

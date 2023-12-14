@@ -40,39 +40,43 @@ document.addEventListener('DOMContentLoaded', async function () {
   var info = L.control();
 
   info.onAdd = function (map) {
-    this._div = L.DomUtil.create('div', 'info w-[300px]');
+    this._div = L.DomUtil.create('div', 'info sm:w-[300px] w-[150px]');
     this.update();
     return this._div;
   };
 
   info.update = function (props) {
     let contents =
-      '<p class=" font-catie text-xl">Seleccione un distrito y un mes para conocer su índice</p>';
+      '<p class=" font-catie sm:text-xl text-base">Seleccione un distrito y un mes para conocer su índice</p>';
 
     if (props) {
       contents = '<p></p>';
       if (props.provincia) {
-        contents += `<p class="font-catie w-full font-bold text-background uppercase text-xl">${props.provincia}</p>`;
+        contents += `<p class="font-catie w-full font-bold text-background uppercase sm:text-xl text-lg">${props.provincia}</p>`;
       }
       if (props.canton && props.provincia) {
-        contents += `<p class="font-catie w-full font-bold text-background uppercase text-xl">${props.canton}</p>`;
+        contents += `<p class="font-catie w-full font-bold text-background uppercase sm:text-xl text-lg">${props.canton}</p>`;
       }
-      contents += `<p class="font-catie w-full font-bold text-secondary uppercase text-xl">${props.name}</p>`;
+      contents += `<p class="font-catie w-full font-bold text-secondary uppercase sm:text-xl text-lg">${props.name}</p>`;
 
       if (props.canton && props.provincia && props.indice) {
         const backgroundColor = props.color ? props.color.toLowerCase() : 'white';
         const colorStyle = `background-color: ${backgroundColor};`;
+        if (props.indice === 1) {
+          contents += `<p class="font-catie w-[60%] sm:text-2xl text-lg my-4 text-background uppercase border-2 border-background mx-auto" style="${colorStyle}">DESCONOCIDO</p>`;
+        } else {
+          contents += `<p class="font-catie w-[60%] sm:text-2xl text-lg my-4 text-background uppercase border-2 border-background mx-auto" style="${colorStyle}">Índice: ${props.indice}</p>`;
+        }
 
-        contents += `<p class="font-catie w-[60%] text-2xl my-4 text-background uppercase border-2 border-background mx-auto" style="${colorStyle}">Índice: ${props.indice}</p>`;
       } else if (props.canton && props.provincia && !props.indice) {
-        contents += `<p class="font-catie w-1/2 text-xl text-background pt-4 mx-auto italic">Seleccione un mes para ver el índice</p>`;
+        contents += `<p class="font-catie w-1/2 sm:text-xl text-base text-background sm:pt-4 mx-auto text-center italic">Seleccione un mes para ver el índice</p>`;
       }
       if (props.mes) {
-        contents += `<p class="font-catie w-full text-background text-lg">${props.mes}, 2023</p>`;
+        contents += `<p class="font-catie w-full text-background sm:text-lg text-base">${props.mes}, 2023</p>`;
       }
     }
 
-    this._div.innerHTML = `<h3 class=' font-catie text-3xl font-bold text-center pb-8'>Índice Distrital de Riesgo</h3>${contents}`;
+    this._div.innerHTML = `<h3 class=' font-catie sm:text-3xl text-xl font-bold text-center sm:pb-8 pb-4'>Índice Distrital de Riesgo</h3>${contents}`;
   };
 
   info.addTo(map);
@@ -81,17 +85,33 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   var legend = L.control({ position: 'bottomleft' });
 
-  legend.onAdd = function (map) {
-    var div = L.DomUtil.create('div', 'info legend w-[200px]'),
-      grades = [0, 20, 40, 60, 80];
 
-    for (var i = 0; i < grades.length; i++) {
-      const rangeText = grades[i + 1] ? `<p class="font-catie font-bold text-xl">${grades[i]} &ndash; ${grades[i + 1]}</p>` : `<p class="font-catie font-bold text-xl">${grades[i]}+</p>`;
-      div.innerHTML +=
-        '<i  style="background:' + getColor(grades[i] + 1) + '"></i> ' + rangeText;
+  legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend w-[215px] text-lg'),
+      grades = [0, 0.168, 0.336, 0.504, 0.672, 0.840, 1];
+
+    function generateRangeText(start, end, label) {
+      return `<p class="font-catie font-bold text-left">${start.toFixed(3)} &ndash; ${end.toFixed(3)} | ${label}</p>`;
     }
+
+    for (var i = 1; i < grades.length; i++) {
+      var rangeText;
+
+      if (grades[i] === 0.168) {
+        rangeText = generateRangeText(grades[i - 1], grades[i], 'Bajo');
+      } else if (grades[i] < 1) {
+        const labels = ['Bajo', 'Medio Bajo', 'Medio', 'Medio Alto', 'Alto'];
+        rangeText = generateRangeText(grades[i], grades[i + 1], labels[i - 1]);
+      } else {
+        rangeText = '<p class="font-catie font-bold text-left">Desconocido</p>';
+      }
+
+      const color = getColor(grades[i]);
+      div.innerHTML += `<i style="background:${color}; border: 1px solid #000;"></i> ${rangeText}`;
+    }
+
     return div;
-  }
+  };
 
   legend.addTo(map);
 
@@ -163,6 +183,33 @@ document.addEventListener('DOMContentLoaded', async function () {
       });
     }, 50);
   }
+
+  //Function to navigate back to selectors
+  var scrollButton = L.control({ position: 'bottomright' });
+
+  scrollButton.onAdd = function (map) {
+    var container = L.DomUtil.create('div', '');
+
+    container.innerHTML = '<button id="scrollToMenu" class="bg-primary rounded-full p-4 border-2 border-secondary hover:bg-primaryLight lg:hidden">' +
+      '<img src="./styles/images/arrow-down.svg" alt="Up Arrow" class="w-6 h-6 rotate-180" />' +
+      '</button>';
+
+    return container;
+  };
+
+  scrollButton.addTo(map);
+
+  function scrollTo(element) {
+    window.scroll({
+      behavior: 'smooth',
+      left: 0,
+      top: element.offsetTop
+    });
+  }
+
+  document.getElementById("scrollToMenu").addEventListener('click', () => {
+    scrollTo(document.getElementById("menu"));
+  });
 
   //FUNCTION TO ADD GEOJSON TO MAP
   function addGeoJSONToMap(
@@ -383,7 +430,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     distritoID = `${selectedProvinceId}${selectedCantonId}${selectedDistritoId}`;
 
-    loadPlace('distritos', distritoID, selectedProvinceId, true, {
+    loadPlace('distritos', distritoID, selectedProvinceId, false, {
       name: distritoOptions[parseInt(selectedDistritoId)].text,
       id: distritoID,
       provincia: selectProvincia.options[selectedProvinceId].text,
@@ -431,20 +478,27 @@ document.addEventListener('DOMContentLoaded', async function () {
       canton: selectCanton.options[parseInt(selectedCantonId)].text,
     }
 
-    loadPlace('distritos', distritoID, getColor(value), true, additionalData);
+    loadPlace('distritos', distritoID, getColor(value), false, additionalData);
     info.update(additionalData);
   });
 
   function getColor(d) {
-    return d >= 80
-      ? '#FF0000'
-      : d >= 60
-        ? '#FFA500'
-        : d >= 40
-          ? '#FFFF00'
-          : d >= 20
-            ? '#ADFF2F'
-            : '#00FF00';
+    if (d === 1) {
+      return '#808080'; // Gray for special case when d is equal to 1
+    } else if (d >= 0 && d <= 0.168) {
+      return '#90EE90'; // Light green
+    } else if (d > 0.168 && d <= 0.336) {
+      return '#008000'; // Green
+    } else if (d > 0.336 && d <= 0.504) {
+      return '#FFFF00'; // Yellow
+    } else if (d > 0.504 && d <= 0.672) {
+      return '#FFA500'; // Orange
+    } else if (d > 0.672 && d <= 0.840) {
+      return '#FF0000'; // Red
+    } else {
+      // Handle other cases or return a default color
+      return '#000000'; // Default color (black) for values outside the specified ranges
+    }
   }
 
 });

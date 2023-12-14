@@ -197,4 +197,16 @@ document.addEventListener('DOMContentLoaded', async function () {
       distritoIndicesData.distritos[distritoId][selectMes.value];
     document.dispatchEvent(new Event('colorMap'));
   };
+
+  function scrollTo(element) {
+    window.scroll({
+      behavior: 'smooth',
+      left: 0,
+      top: element.offsetTop
+    });
+  }
+
+  document.getElementById("scrollToMap").addEventListener('click', () => {
+    scrollTo(document.getElementById("mapDiv"));
+  });
 });
