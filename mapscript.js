@@ -63,9 +63,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         const backgroundColor = props.color ? props.color.toLowerCase() : 'white';
         const colorStyle = `background-color: ${backgroundColor};`;
         if (props.indice === 1) {
-          contents += `<p class="font-catie w-[60%] sm:text-2xl text-lg my-4 text-background uppercase border-2 border-background mx-auto" style="${colorStyle}">DESCONOCIDO</p>`;
+          contents += `<p class="font-catie w-[80%] sm:text-2xl text-md my-4 text-background uppercase border-2 border-background mx-auto" style="${colorStyle}">DESCONOCIDO</p>`;
         } else {
-          contents += `<p class="font-catie w-[60%] sm:text-2xl text-lg my-4 text-background uppercase border-2 border-background mx-auto" style="${colorStyle}">Índice: ${props.indice}</p>`;
+          contents += `<p class="font-catie w-[80%] sm:text-2xl text-lg my-4 text-background uppercase border-2 border-background mx-auto" style="${colorStyle}">Índice: ${props.indice}</p>`;
         }
 
       } else if (props.canton && props.provincia && !props.indice) {
